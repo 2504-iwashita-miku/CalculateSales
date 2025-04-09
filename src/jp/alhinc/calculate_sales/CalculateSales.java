@@ -4,7 +4,9 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class CalculateSales {
@@ -20,6 +22,8 @@ public class CalculateSales {
 	private static final String FILE_NOT_EXIST = "支店定義ファイルが存在しません";
 	private static final String FILE_INVALID_FORMAT = "支店定義ファイルのフォーマットが不正です";
 
+	private static final String files = null;
+
 	/**
 	 * メインメソッド
 	 *
@@ -28,6 +32,7 @@ public class CalculateSales {
 	public static void main(String[] args) {
 		// 支店コードと支店名を保持するMap
 		Map<String, String> branchNames = new HashMap<>();
+
 		// 支店コードと売上金額を保持するMap
 		Map<String, Long> branchSales = new HashMap<>();
 
@@ -37,6 +42,53 @@ public class CalculateSales {
 		}
 
 		// ※ここから集計処理を作成してください。(処理内容2-1、2-2)
+		//売上集計課題に入っているすべてのファイルを取得する
+		File[] files = new File("C:\\Users\\trainee1331\\Desktop\\売上集計課題\\").listFiles();
+
+		for(int i = 0; i< files.length ; i++) {
+
+			String fileName = files[i].getName();
+
+			List<File> rcdFiles = new ArrayList<>();
+	    	if(fileName.matches("^[0-9]{8}.rcd")) {
+	    		System.out.println("数字8桁.rcdです");
+	    		rcdFiles.add(files[i]);
+	    	}
+		}
+
+
+		//2-2
+
+		for(int i = 0; i < rcdFiles.size(); i++) {
+
+			try {
+				String line;
+				// 一行ずつ読み込む
+				while((line = br.readLine()) != null) {
+
+					String[] items = line.split (",");
+				}
+			}
+
+
+		}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -67,9 +119,18 @@ public class CalculateSales {
 			String line;
 			// 一行ずつ読み込む
 			while((line = br.readLine()) != null) {
-				// ※ここの読み込み処理を変更してください。(処理内容1-2)
-				System.out.println(line);
+
+
+
+				String[] items = line.split (",");
+
+				branchNames.put(items[0], items[1]);
+				branchSales.put(items[0], 0L);
+
 			}
+				// ※ここの読み込み処理を変更してください。(処理内容1-2)
+			System.out.println(line);
+
 
 		} catch(IOException e) {
 			System.out.println(UNKNOWN_ERROR);
