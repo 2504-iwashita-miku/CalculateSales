@@ -1,8 +1,10 @@
 package jp.alhinc.calculate_sales;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -45,11 +47,12 @@ public class CalculateSales {
 		//売上集計課題に入っているすべてのファイルを取得する
 		File[] files = new File("C:\\Users\\trainee1331\\Desktop\\売上集計課題\\").listFiles();
 
+		List<File> rcdFiles = new ArrayList<>();
 		for(int i = 0; i< files.length ; i++) {
 
 			String fileName = files[i].getName();
 
-			List<File> rcdFiles = new ArrayList<>();
+
 	    	if(fileName.matches("^[0-9]{8}.rcd")) {
 	    		System.out.println("数字8桁.rcdです");
 	    		rcdFiles.add(files[i]);
@@ -59,28 +62,46 @@ public class CalculateSales {
 
 		//2-2
 
-		for(int i = 0; i < rcdFiles.size(); i++) {
+		for(int i = 0; i < rcdFiles .size(); i++) {
+			BufferedReader br = null;
 
 			try {
+				File file = new File(args[0], rcdFiles.get(i).getName());
+				FileReader fr = new FileReader(file);
+				br = new BufferedReader(fr);
+
 				String line;
 				// 一行ずつ読み込む
+				List<String> list = new ArrayList();
 				while((line = br.readLine()) != null) {
+					// listに追加
+					list.add(line);
 
-					String[] items = line.split (",");
+				}
+
+				long fileSale = Long.parseLong(list.get(1));
+
+				Long saleAmount = branchSales.get(list.get(0)) + fileSale;
+
+				//加算した売上金額をMapに追加
+				branchSales.put(list.get(0), saleAmount);
+
+
+			}catch(IOException e) {
+				System.out.println(UNKNOWN_ERROR);
+
+			} finally {
+				// ファイルを開いている場合
+				if(br != null) {
+					try {
+						// ファイルを閉じる
+						br.close();
+					} catch(IOException e) {
+						System.out.println(UNKNOWN_ERROR);
+					}
+				}
 				}
 			}
-
-
-		}
-
-
-
-
-
-
-
-
-
 
 
 
@@ -119,7 +140,6 @@ public class CalculateSales {
 			String line;
 			// 一行ずつ読み込む
 			while((line = br.readLine()) != null) {
-
 
 
 				String[] items = line.split (",");
@@ -161,8 +181,38 @@ public class CalculateSales {
 	 */
 	private static boolean writeFile(String path, String fileName, Map<String, String> branchNames, Map<String, Long> branchSales) {
 		// ※ここに書き込み処理を作成してください。(処理内容3-1)
+		BufferedWriter bw = null;
+
+		try {
+			File file = new File(path, fileName);
+			FileWriter filewriter = new FileWriter(file);
+			bw = new BufferedWriter(filewriter);
+
+
+			for (String key :  branchNames.keySet()) {
+				bw.write(key +","+ branchNames.get(key)+"," + branchSales.get(key));
+				bw.newLine();
+			}
+
+
+		} catch(IOException e) {
+			System.out.println(UNKNOWN_ERROR);
+			return false;
+		} finally {
+			// ファイルを開いている場合
+			if(bw != null) {
+				try {
+					// ファイルを閉じる
+					bw.close();
+				} catch(IOException e) {
+					System.out.println(UNKNOWN_ERROR);
+					return false;
+				}
+				return true;
+			}
+		}
 
 		return true;
-	}
+		}
 
 }
