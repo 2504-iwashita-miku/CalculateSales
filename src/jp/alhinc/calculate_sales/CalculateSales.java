@@ -52,12 +52,10 @@ public class CalculateSales {
 
 			String fileName = files[i].getName();
 
-
-	    	if(fileName.matches("^[0-9]{8}[.]rcd$")) {
-	    		rcdFiles.add(files[i]);
-	    	}
+			if (fileName.matches("^[0-9]{8}[.]rcd$")) {
+				rcdFiles.add(files[i]);
+			}
 		}
-
 
 		//2-2
 
@@ -71,19 +69,18 @@ public class CalculateSales {
 
 				String line;
 				// 一行ずつ読み込む
-				List<String> filecontents = new ArrayList();
+				List<String> fileContents = new ArrayList<>();
 				while((line = br.readLine()) != null) {
 					// listに追加
-					filecontents.add(line);
-
+					fileContents.add(line);
 				}
 
-				long fileSale = Long.parseLong(filecontents.get(1));
+				long fileSale = Long.parseLong(fileContents.get(1));
 
-				Long saleAmount = branchSales.get(filecontents.get(0)) + fileSale;
+				Long saleAmount = branchSales.get(fileContents.get(0)) + fileSale;
 
 				//加算した売上金額をMapに追加
-				branchSales.put(filecontents.get(0), saleAmount);
+				branchSales.put(fileContents.get(0), saleAmount);
 
 			} catch(IOException e) {
 				System.out.println(UNKNOWN_ERROR);
@@ -129,7 +126,6 @@ public class CalculateSales {
 			String line;
 			// 一行ずつ読み込む
 			while((line = br.readLine()) != null) {
-
 
 				String[] items = line.split (",");
 
