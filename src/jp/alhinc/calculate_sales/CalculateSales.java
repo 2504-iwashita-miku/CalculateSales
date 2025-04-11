@@ -7,6 +7,7 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -54,8 +55,21 @@ public class CalculateSales {
 
 			if (fileName.matches("^[0-9]{8}[.]rcd$")) {
 				rcdFiles.add(files[i]);
+
 			}
 		}
+			//売上ファイルを保持しているListをソートする
+			Collections.sort(rcdFiles);
+			//売上ファイルが連番になっているかチェック
+			for(int i = 0; i<rcdFiles.size() - 1;i++) {
+				int former = Integer.parseInt(rcdFiles.get(i).getName().substring(0, 8));
+				int latter = Integer.parseInt(rcdFiles.get(i + 1).getName().substring(0, 8));
+
+				if((latter - former)!= 1){
+					System.out.println("売上ファイル名が連番になっていません");
+				}
+			}
+
 
 		//2-2
 
@@ -97,7 +111,12 @@ public class CalculateSales {
 					}
 				}
 			}
+
+			//売上金額の合計が11桁以上かどうかチェック
+//			long fileSale = Long.parseLong(売上金額));
+//			Long saleAmount = branchSales.get(支店コード) + fileSale;
 		}
+
 
 		// 支店別集計ファイル書き込み処理
 		if(!writeFile(args[0], FILE_NAME_BRANCH_OUT, branchNames, branchSales)) {
@@ -120,6 +139,11 @@ public class CalculateSales {
 
 		try {
 			File file = new File(path, fileName);
+			//ファイルの存在をチェック
+			if(!file.exists()) {
+				System.out.println("支店定義ファイルが存在しません");
+			}
+
 			FileReader fr = new FileReader(file);
 			br = new BufferedReader(fr);
 
@@ -129,10 +153,18 @@ public class CalculateSales {
 
 				String[] items = line.split (",");
 
+				//支店定義ファイルのフォーマットが正しいかチェック
+				//配列の要素数が2じゃないとき　||　支店コードの数字が3桁じゃないとき
+				if((items.length != 2) || (!items[0].matches("^[0-9]{3}$"))){
+					System.out.println("支店定義ファイルのフォーマットが不正です");
+
+				}
+
 				branchNames.put(items[0], items[1]);
 				branchSales.put(items[0], 0L);
 
 			}
+
 
 		} catch(IOException e) {
 			System.out.println(UNKNOWN_ERROR);
