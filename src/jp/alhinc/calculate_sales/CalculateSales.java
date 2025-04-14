@@ -33,6 +33,9 @@ public class CalculateSales {
 	 * @param コマンドライン引数
 	 */
 	public static void main(String[] args) {
+		if (args.length != 1) {
+			System.out.println("予期せぬエラーが発生しました");
+		}
 		// 支店コードと支店名を保持するMap
 		Map<String, String> branchNames = new HashMap<>();
 
@@ -43,17 +46,16 @@ public class CalculateSales {
 		if(!readFile(args[0], FILE_NAME_BRANCH_LST, branchNames, branchSales)) {
 			return;
 		}
-
 		// ※ここから集計処理を作成してください。(処理内容2-1、2-2)
 		//売上集計課題に入っているすべてのファイルを取得する
 		File[] files = new File(args[0]).listFiles();
-
 		List<File> rcdFiles = new ArrayList<>();
 		for(int i = 0; i < files.length; i++) {
 
 			String fileName = files[i].getName();
 
-			if (fileName.matches("^[0-9]{8}[.]rcd$")) {
+			//対象がファイルであり、数字８桁.rcdかどうかチェック
+			if (files[i].isFile() && fileName.matches("^[0-9]{8}[.]rcd$")){
 				rcdFiles.add(files[i]);
 
 			}
@@ -69,8 +71,6 @@ public class CalculateSales {
 					System.out.println("売上ファイル名が連番になっていません");
 				}
 			}
-
-
 		//2-2
 
 		for(int i = 0; i < rcdFiles.size(); i++) {
@@ -88,10 +88,28 @@ public class CalculateSales {
 					// listに追加
 					fileContents.add(line);
 				}
+				//売上ファイルのフォーマットが正しいかチェック
+				if(fileContents.size() != 2) {
+					System.out.println(rcdFiles.get(i).getName() + "のフォーマットが不正です");
+				}
+				//売上ファイルの支店コードが支店定義ファイルに存在するかチェック
+				if(!branchSales.containsKey(fileContents.get(0))) {
+					System.out.println(rcdFiles.get(i).getName() + "のフォーマットが不正です");
+				}
 
 				long fileSale = Long.parseLong(fileContents.get(1));
 
 				Long saleAmount = branchSales.get(fileContents.get(0)) + fileSale;
+
+				//売上金額が数字かどうかチェック
+				if(!fileContents.get(1).matches("^[0-9]$")) {
+					System.out.println("予期せぬエラーが発生しました");
+				}
+
+				//売上金額の合計が11桁以上かどうかチェック
+					if(saleAmount >= 10000000000L){
+						System.out.println("合計金額が10桁を超えました");
+					}
 
 				//加算した売上金額をMapに追加
 				branchSales.put(fileContents.get(0), saleAmount);
@@ -111,10 +129,6 @@ public class CalculateSales {
 					}
 				}
 			}
-
-			//売上金額の合計が11桁以上かどうかチェック
-//			long fileSale = Long.parseLong(売上金額));
-//			Long saleAmount = branchSales.get(支店コード) + fileSale;
 		}
 
 
