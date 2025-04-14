@@ -92,11 +92,11 @@ public class CalculateSales {
 				}
 				//売上ファイルのフォーマットが正しいかチェック
 				if(fileContents.size() != 2) {
-					System.out.println(rcdFiles.get(i).getName() + "のフォーマットが不正です");
+					System.out.println(rcdFiles.get(i).getName() + FILE_INVALID_FORMAT);
 				}
 				//売上ファイルの支店コードが支店定義ファイルに存在するかチェック
 				if(!branchSales.containsKey(fileContents.get(0))) {
-					System.out.println(rcdFiles.get(i).getName() + "のフォーマットが不正です");
+					System.out.println(rcdFiles.get(i).getName() + FILE_INVALID_FORMAT);
 				}
 
 				//売上金額が数字かどうかチェック
@@ -109,8 +109,8 @@ public class CalculateSales {
 
 				//売上金額の合計が11桁以上かどうかチェック
 				if(saleAmount >= 10000000000L){
-						System.out.println(TOTAL_AMOUNT_ERROR);
-						return;
+					System.out.println(TOTAL_AMOUNT_ERROR);
+					return;
 				}
 
 				//加算した売上金額をMapに追加
