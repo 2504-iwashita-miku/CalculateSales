@@ -93,10 +93,12 @@ public class CalculateSales {
 				//売上ファイルのフォーマットが正しいかチェック
 				if(fileContents.size() != 2) {
 					System.out.println(rcdFiles.get(i).getName() + FILE_INVALID_FORMAT);
+					return;
 				}
 				//売上ファイルの支店コードが支店定義ファイルに存在するかチェック
 				if(!branchSales.containsKey(fileContents.get(0))) {
 					System.out.println(rcdFiles.get(i).getName() + FILE_INVALID_FORMAT);
+					return;
 				}
 
 				//売上金額が数字かどうかチェック
@@ -168,9 +170,10 @@ public class CalculateSales {
 
 				//支店定義ファイルのフォーマットが正しいかチェック
 				//配列の要素数が2じゃないとき　||　支店コードの数字が3桁じゃないとき
-			if((items.length != 2) || (!items[0].matches("^[0-9]{3}$"))){
-				System.out.println(FILE_INVALID_FORMAT);
-			}
+				if((items.length != 2) || (!items[0].matches("^[0-9]{3}$"))){
+					System.out.println(FILE_INVALID_FORMAT);
+					return false;
+				}
 				branchNames.put(items[0], items[1]);
 				branchSales.put(items[0], 0L);
 			}
