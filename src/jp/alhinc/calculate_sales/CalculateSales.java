@@ -37,6 +37,7 @@ public class CalculateSales {
 	public static void main(String[] args) {
 		if (args.length != 1) {
 			System.out.println(UNKNOWN_ERROR);
+			return;
 		}
 		// 支店コードと支店名を保持するMap
 		Map<String, String> branchNames = new HashMap<>();
@@ -64,14 +65,15 @@ public class CalculateSales {
 			//売上ファイルを保持しているListをソートする
 			Collections.sort(rcdFiles);
 			//売上ファイルが連番になっているかチェック
-			for(int i = 0; i<rcdFiles.size() - 1;i++) {
-				int former = Integer.parseInt(rcdFiles.get(i).getName().substring(0, 8));
-				int latter = Integer.parseInt(rcdFiles.get(i + 1).getName().substring(0, 8));
+		for(int i = 0; i<rcdFiles.size() - 1;i++) {
+			int former = Integer.parseInt(rcdFiles.get(i).getName().substring(0, 8));
+			int latter = Integer.parseInt(rcdFiles.get(i + 1).getName().substring(0, 8));
 
-				if((latter - former) != 1){
-					System.out.println(FILE_NOT_SERIAL_NUMBER);
-				}
+			if((latter - former) != 1){
+				System.out.println(FILE_NOT_SERIAL_NUMBER);
+				return;
 			}
+		}
 		//2-2
 		for(int i = 0; i < rcdFiles.size(); i++) {
 			BufferedReader br = null;
@@ -100,6 +102,7 @@ public class CalculateSales {
 				//売上金額が数字かどうかチェック
 				if(!fileContents.get(1).matches("^[0-9]*$")) {
 					System.out.println(UNKNOWN_ERROR);
+					return;
 				}
 				long fileSale = Long.parseLong(fileContents.get(1));
 				Long saleAmount = branchSales.get(fileContents.get(0)) + fileSale;
@@ -107,6 +110,7 @@ public class CalculateSales {
 				//売上金額の合計が11桁以上かどうかチェック
 				if(saleAmount >= 10000000000L){
 						System.out.println(TOTAL_AMOUNT_ERROR);
+						return;
 				}
 
 				//加算した売上金額をMapに追加
@@ -164,10 +168,9 @@ public class CalculateSales {
 
 				//支店定義ファイルのフォーマットが正しいかチェック
 				//配列の要素数が2じゃないとき　||　支店コードの数字が3桁じゃないとき
-				if((items.length != 2) || (!items[0].matches("^[0-9]{3}$"))){
-					System.out.println(FILE_INVALID_FORMAT);
-				}
-
+			if((items.length != 2) || (!items[0].matches("^[0-9]{3}$"))){
+				System.out.println(FILE_INVALID_FORMAT);
+			}
 				branchNames.put(items[0], items[1]);
 				branchSales.put(items[0], 0L);
 			}
@@ -224,7 +227,6 @@ public class CalculateSales {
 					System.out.println(UNKNOWN_ERROR);
 					return false;
 				}
-				return true;
 			}
 		}
 		return true;
