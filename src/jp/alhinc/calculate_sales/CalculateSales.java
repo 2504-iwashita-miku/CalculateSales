@@ -97,14 +97,12 @@ public class CalculateSales {
 					System.out.println(rcdFiles.get(i).getName() + "のフォーマットが不正です");
 				}
 
-				long fileSale = Long.parseLong(fileContents.get(1));
-
-				Long saleAmount = branchSales.get(fileContents.get(0)) + fileSale;
-
 				//売上金額が数字かどうかチェック
-				if(!fileContents.get(1).matches("^[0-9]$")) {
+				if(!fileContents.get(1).matches("^[0-9]*$")) {
 					System.out.println("予期せぬエラーが発生しました");
 				}
+				long fileSale = Long.parseLong(fileContents.get(1));
+				Long saleAmount = branchSales.get(fileContents.get(0)) + fileSale;
 
 				//売上金額の合計が11桁以上かどうかチェック
 					if(saleAmount >= 10000000000L){
